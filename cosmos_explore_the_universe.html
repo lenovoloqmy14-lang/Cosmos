@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSMOS — Explore the Universe</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #050711;
+            --bg-secondary: #090D1B;
+            --bg-card: #0E1426;
+            --bg-card-hover: #141C35;
+            --primary: #8B7CFF;
+            --secondary: #43C6FF;
+            --nebula: #C084FC;
+            --text-main: #F5F7FF;
+            --text-secondary: #A0AAC2;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(139, 124, 255, 0.4);
+            --success: #55D6A7;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.65;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Starfield background simulation */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(1px 1px at 25px 35px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 50px 80px, var(--secondary), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 100px 180px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 150px 50px, var(--nebula), rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 200px 120px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 220px 220px, var(--primary), rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            opacity: 0.3;
+        }
+
+        /* Container & Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media(max-width: 1024px) {
+            .container { padding: 0 28px; }
+        }
+        @media(max-width: 640px) {
+            .container { padding: 0 18px; }
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .eyebrow {
+            font-family: var(--font-heading);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--secondary);
+            margin-bottom: 14px;
+            display: inline-block;
+            font-weight: 700;
+        }
+
+        /* Navigation Bar */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(5, 7, 17, 0.82);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 86px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.35rem;
+            letter-spacing: 0.12em;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 1.25rem;
+            animation: spinSlow 25s linear infinite;
+        }
+
+        @keyframes spinSlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-main);
+            text-shadow: 0 0 14px rgba(139, 124, 255, 0.45);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-search-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-search-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-main);
+            background: var(--bg-card-hover);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border: none;
+            padding: 12px 26px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(139, 124, 255, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(139, 124, 255, 0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 12px 26px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: rgba(139, 124, 255, 0.08);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        @media(max-width: 1100px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+        }
+
+        /* Mobile Drawer */
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 28px;
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-drawer.open {
+            right: 0;
+        }
+
+        .mobile-drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .mobile-drawer-close {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .mobile-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .mobile-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .mobile-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 190px 0 110px;
+            min-height: 95vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            background: radial-gradient(circle at 75% 25%, rgba(192, 132, 252, 0.14) 0%, rgba(67, 198, 255, 0.06) 45%, transparent 75%);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.8rem, 5.2vw, 4.8rem);
+            line-height: 1.08;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #F5F7FF 25%, #9faecb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 38px;
+            max-width: 620px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-planet-card {
+            width: 100%;
+            max-width: 520px;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65);
+            background: var(--bg-card);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .hero-planet-card img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .hero-planet-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .hero-planet-info {
+            padding: 24px;
+            background: linear-gradient(to top, var(--bg-card) 85%, rgba(14,20,38,0.7));
+        }
+
+        .hero-planet-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 6px;
+        }
+
+        .hero-planet-info p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        @media(max-width: 968px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin: 0 auto 36px; }
+            .hero-btns { justify-content: center; }
+            .hero-visual { margin-top: 30px; }
+        }
+
+        /* Astronomy Quick Facts Strip */
+        .quick-facts {
+            padding: 60px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .fact-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 28px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .fact-item:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+        }
+
+        .fact-value {
+            font-family: var(--font-heading);
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .fact-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .fact-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        @media(max-width: 1024px) {
+            .facts-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media(max-width: 580px) {
+            .facts-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Section Commons */
+        section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 64px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2.2rem, 3.6vw, 3.2rem);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Discover Cards Section */
+        .discover-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .discover-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .discover-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        .discover-img-wrapper {
+            height: 240px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discover-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .discover-card:hover .discover-img-wrapper img {
+            transform: scale(1.08);
+        }
+
+        .discover-body {
+            padding: 28px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .discover-body h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .discover-body p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            margin-bottom: 20px;
+        }
+
+        .discover-link {
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media(max-width: 1024px) {
+            .discover-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media(max-width: 680px) {
+            .discover-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Solar System & Bodies Section */
+        .solar-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .solar-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 44px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 10px 22px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .solar-display-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 50px;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .solar-img-box {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 400px;
+        }
+
+        .solar-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .solar-info h3 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+        }
+
+        .solar-badge {
+            background: rgba(139, 124, 255, 0.15);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .solar-info p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .solar-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .solar-stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 14px;
+        }
+
+        .solar-stat-box span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .solar-stat-box strong {
+            font-size: 1rem;
+            font-family: var(--font-heading);
+            color: var(--text-main);
+        }
+
+        @media(max-width: 968px) {
+            .solar-display-grid { grid-template-columns: 1fr; padding: 28px; }
+        }
+
+        /* Black Holes Compendium Section */
+        .blackholes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .bh-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .bh-card:hover {
+            border-color: var(--secondary);
+            transform: translateY(-5px);
+        }
+
+        .bh-img {
+            height: 220px;
+            position: relative;
+        }
+
+        .bh-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bh-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .bh-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .bh-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .bh-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+        }
+
+        .bh-metrics div {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bh-metrics span:first-child {
+            color: var(--text-secondary);
+        }
+
+        .bh-metrics span:last-child {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        @media(max-width: 1024px) {
+            .blackholes-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media(max-width: 680px) {
+            .blackholes-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Space Agencies Section */
+        .agencies-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .agencies-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .agency-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            transition: var(--transition);
+        }
+
+        .agency-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .agency-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .agency-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: rgba(139, 124, 255, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .agency-header h3 {
+            font-size: 1.15rem;
+            margin-bottom: 2px;
+        }
+
+        .agency-header span {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .agency-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .agency-flagship {
+            font-size: 0.82rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 10px;
+            color: var(--text-main);
+        }
+
+        @media(max-width: 1024px) {
+            .agencies-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media(max-width: 680px) {
+            .agencies-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Constellations Deep Guide */
+        .constellation-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .constellation-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .constellation-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .constellation-img {
+            height: 200px;
+            position: relative;
+        }
+
+        .constellation-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .constellation-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .constellation-body h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .constellation-body p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .constellation-meta {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            font-weight: 500;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media(max-width: 1024px) {
+            .constellation-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media(max-width: 680px) {
+            .constellation-grid { grid-template-columns: 1fr; }
+        }
+
+        /* News Section */
+        .news-section {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .news-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .news-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-5px);
+        }
+
+        .news-img {
+            height: 220px;
+            position: relative;
+        }
+
+        .news-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .news-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .news-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .news-content h3 {
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .news-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .news-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+        }
+
+        .news-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media(max-width: 1024px) {
+            .news-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media(max-width: 680px) {
+            .news-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Interactive Quiz Section */
+        .quiz-card {
+            max-width: 760px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .quiz-question {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 28px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 14px;
+            color: var(--text-main);
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quiz-option:hover {
+            background: rgba(139, 124, 255, 0.1);
+            border-color: var(--primary);
+        }
+
+        .quiz-option.correct {
+            background: rgba(85, 214, 167, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(255, 99, 99, 0.2);
+            border-color: #ff6363;
+            color: #ff6363;
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        @media(max-width: 680px) {
+            .quiz-card { padding: 24px; }
+        }
+
+        /* Modal Structure */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 7, 17, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            width: 90%;
+            max-width: 680px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text-main);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 80px 0 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h4 {
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-col ul a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-col ul a:hover {
+            color: var(--text-main);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        @media(max-width: 968px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media(max-width: 580px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="starfield"></div>
+
+    <!-- Navigation Bar -->
+    <header id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fa-solid fa-orbit"></i>
+                COSMOS
+            </a>
+            <ul class="nav-links">
+                <li><a href="#discover" class="active">Discover</a></li>
+                <li><a href="#solarsystem">Solar System</a></li>
+                <li><a href="#blackholes">Black Holes</a></li>
+                <li><a href="#agencies">Space Agencies</a></li>
+                <li><a href="#constellations">Constellations</a></li>
+                <li><a href="#news">Latest News</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="nav-search-btn" id="openSearchBtn" title="Search Cosmos"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <a href="#quiz" class="btn-primary">Cosmic Quiz</a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="mobile-drawer-header">
+            <a href="#" class="logo"><i class="fa-solid fa-orbit"></i> COSMOS</a>
+            <button class="mobile-drawer-close" id="mobileDrawerClose"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="mobile-links">
+            <li><a href="#discover" class="mobile-nav-link">Discover</a></li>
+            <li><a href="#solarsystem" class="mobile-nav-link">Solar System</a></li>
+            <li><a href="#blackholes" class="mobile-nav-link">Black Holes</a></li>
+            <li><a href="#agencies" class="mobile-nav-link">Space Agencies</a></li>
+            <li><a href="#constellations" class="mobile-nav-link">Constellations</a></li>
+            <li><a href="#news" class="mobile-nav-link">Latest News</a></li>
+            <li><a href="#quiz" class="mobile-nav-link">Cosmic Quiz</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <span class="eyebrow">Your Journey Beyond Earth</span>
+                    <h1>The Universe Is Waiting to Be Explored.</h1>
+                    <p>Discover distant galaxies, understand supermassive black holes, inspect every planet in our celestial neighborhood, and track humanity's voyage across the cosmos.</p>
+                    <div class="hero-btns">
+                        <a href="#discover" class="btn-primary">Start Exploring <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="#solarsystem" class="btn-outline">Explore Planets</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-planet-card">
+                        <img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1000&q=80" alt="Carina Nebula Star Nursery by NASA/ESA">
+                        <div class="hero-planet-info">
+                            <h3>Carina Nebula Star Nursery</h3>
+                            <p>Captured by spaceborne observatories revealing stellar birth.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Astronomy Quick Facts -->
+    <div class="quick-facts">
+        <div class="container">
+            <div class="facts-grid">
+                <div class="fact-item">
+                    <div class="fact-value">13.8B</div>
+                    <div class="fact-title">Age of Universe</div>
+                    <div class="fact-desc">Years since the Big Bang expansion began.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-value">299,792</div>
+                    <div class="fact-title">Speed of Light (km/s)</div>
+                    <div class="fact-desc">The absolute cosmic speed limit in vacuum.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-value">100B+</div>
+                    <div class="fact-title">Milky Way Stars</div>
+                    <div class="fact-desc">Estimated stellar population in our galaxy alone.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-value">2 Trillion</div>
+                    <div class="fact-title">Observable Galaxies</div>
+                    <div class="fact-desc">Estimated galaxy count in the observable universe.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discover Section -->
+    <section id="discover">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">Cosmic Archives</span>
+                <h2>Explore the Cosmos</h2>
+                <p>Delve into fundamental cosmic phenomena shaping space and time.</p>
+            </div>
+            <div class="discover-grid">
+                <div class="discover-card" onclick="location.href='#solarsystem'">
+                    <div class="discover-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80" alt="Solar System Planets">
+                    </div>
+                    <div class="discover-body">
+                        <div>
+                            <h3>The Solar System</h3>
+                            <p>Explore terrestrial planets, gas giants, ice giants, and dwarf planets.</p>
+                        </div>
+                        <span class="discover-link">Inspect Planets <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+                <div class="discover-card" onclick="location.href='#blackholes'">
+                    <div class="discover-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80" alt="Black Holes & Accretion Disks">
+                    </div>
+                    <div class="discover-body">
+                        <div>
+                            <h3>Black Holes & Singularities</h3>
+                            <p>Investigate stellar-mass and supermassive black holes like Sgr A* and TON 618.</p>
+                        </div>
+                        <span class="discover-link">Examine Singularities <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+                <div class="discover-card" onclick="location.href='#agencies'">
+                    <div class="discover-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=800&q=80" alt="Space Exploration Rockets">
+                    </div>
+                    <div class="discover-body">
+                        <div>
+                            <h3>Global Space Agencies</h3>
+                            <p>Discover flagship missions by NASA, ESA, ISRO, SpaceX, and international partners.</p>
+                        </div>
+                        <span class="discover-link">View Agencies <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solar System & Complete Planet Directory -->
+    <section class="solar-section" id="solarsystem">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">Planetary Directory</span>
+                <h2>Complete Solar System Explorer</h2>
+                <p>Select any planet or dwarf planet to inspect comprehensive physical metrics.</p>
+            </div>
+            
+            <div class="solar-tabs" id="planetTabs">
+                <!-- Tabs generated dynamically via JS -->
+            </div>
+
+            <div class="solar-display-grid" id="planetDisplayCard">
+                <!-- Active Planet Display -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Black Holes Compendium Section -->
+    <section id="blackholes">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">Gravitational Extremes</span>
+                <h2>Discovered Black Holes Compendium</h2>
+                <p>Detailed breakdown of verified stellar-mass and supermassive black holes, including accurate quasar scientific visualizations.</p>
+            </div>
+            <div class="blackholes-grid" id="blackHolesGrid">
+                <!-- Black Holes populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Space Agencies Section -->
+    <section class="agencies-section" id="agencies">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">Earth's Envoys</span>
+                <h2>Leading Space Agencies</h2>
+                <p>The organizations driving interplanetary exploration, deep space telescopes, and human flight.</p>
+            </div>
+            <div class="agencies-grid" id="agenciesGrid">
+                <!-- Agencies populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Constellations Section -->
+    <section id="constellations">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">Celestial Navigation</span>
+                <h2>Expanded Constellations Guide</h2>
+                <p>Explore star patterns, mythological backgrounds, and primary stars across the night sky.</p>
+            </div>
+            <div class="constellation-grid" id="constellationGrid">
+                <!-- Constellations populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Space News -->
+    <section class="news-section" id="news">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">Cosmic Dispatches</span>
+                <h2>Latest Space Exploration News</h2>
+                <p>Verified updates from global space agencies and astronomical observatories.</p>
+            </div>
+            <div class="news-grid" id="newsGrid">
+                <!-- News populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Knowledge Quiz -->
+    <section id="quiz">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">Test Your Knowledge</span>
+                <h2>Cosmic Knowledge Quiz</h2>
+                <p>Challenge your understanding of astronomy, planets, and black holes.</p>
+            </div>
+            <div class="quiz-card" id="quizContainer">
+                <!-- Quiz populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="#" class="logo" style="margin-bottom: 16px; display:inline-flex;"><i class="fa-solid fa-orbit"></i> COSMOS</a>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 320px;">Making the wonders of the universe accessible to everyone through scientific accuracy, stunning visualization, and curated data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="#discover">Discover</a></li>
+                        <li><a href="#solarsystem">Solar System</a></li>
+                        <li><a href="#blackholes">Black Holes</a></li>
+                        <li><a href="#agencies">Space Agencies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Knowledge</h4>
+                    <ul>
+                        <li><a href="#constellations">Constellations</a></li>
+                        <li><a href="#news">Space News</a></li>
+                        <li><a href="#quiz">Cosmic Quiz</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Data Sources</h4>
+                    <ul>
+                        <li><span style="color:var(--text-secondary); font-size:0.9rem;">NASA Science API</span></li>
+                        <li><span style="color:var(--text-secondary); font-size:0.9rem;">ESA Observatories</span></li>
+                        <li><span style="color:var(--text-secondary); font-size:0.9rem;">IAU Astronomical Registry</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> COSMOS Platform. Designed for astronomy enthusiasts.</p>
+                <p>Exploring the infinite expanse.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Search Modal -->
+    <div class="modal-overlay" id="searchModal">
+        <div class="modal-container">
+            <button class="modal-close" id="closeSearchModal"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="margin-bottom: 20px;">Search Cosmos Database</h3>
+            <input type="text" id="searchInput" placeholder="Search planets, black holes, constellations..." style="width: 100%; padding: 14px 20px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 1rem; outline: none; margin-bottom: 20px;">
+            <div id="searchResults" style="display: flex; flex-direction: column; gap: 12px; max-height: 350px; overflow-y: auto;">
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Type to begin exploring database records...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Set Dynamic Year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Navigation Toggle for Mobile
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        const mobileDrawerClose = document.getElementById('mobileDrawerClose');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        mobileMenuBtn.addEventListener('click', () => mobileDrawer.classList.add('open'));
+        mobileDrawerClose.addEventListener('click', () => mobileDrawer.classList.remove('open'));
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => mobileDrawer.classList.remove('open'));
+        });
+
+        // Search Modal Controller
+        const searchModal = document.getElementById('searchModal');
+        const openSearchBtn = document.getElementById('openSearchBtn');
+        const closeSearchModal = document.getElementById('closeSearchModal');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        openSearchBtn.addEventListener('click', () => searchModal.classList.add('active'));
+        closeSearchModal.addEventListener('click', () => searchModal.classList.remove('active'));
+        searchModal.addEventListener('click', (e) => {
+            if(e.target === searchModal) searchModal.classList.remove('active');
+        });
+
+        // Comprehensive Planet Data (All Major Planets & Key Dwarf Planets)
+        const planetsData = [
+            {
+                id: 'mercury',
+                name: 'Mercury',
+                type: 'Terrestrial Planet',
+                badge: 'Inner Planet',
+                diameter: '4,879 km',
+                distance: '57.9 million km',
+                dayLength: '1,408 hours',
+                yearLength: '88 Earth days',
+                moons: '0 Known Moons',
+                atmosphere: 'Exosphere (Oxygen, Sodium, Hydrogen)',
+                temp: '-180°C to 430°C',
+                desc: 'The smallest planet in our solar system and closest to the Sun. Mercury is only slightly larger than Earth\'s Moon with extreme temperature fluctuations.',
+                image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'venus',
+                name: 'Venus',
+                type: 'Terrestrial Planet',
+                badge: 'Inner Planet',
+                diameter: '12,104 km',
+                distance: '108.2 million km',
+                dayLength: '5,832 hours',
+                yearLength: '225 Earth days',
+                moons: '0 Known Moons',
+                atmosphere: 'Carbon Dioxide, Thick Sulfuric Acid Clouds',
+                temp: '465°C (Hottest Planet)',
+                desc: 'Spinning in the opposite direction to most planets, Venus features a runaway greenhouse effect making its surface hotter than Mercury.',
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'earth',
+                name: 'Earth',
+                type: 'Terrestrial Planet',
+                badge: 'Cradle of Life',
+                diameter: '12,742 km',
+                distance: '149.6 million km',
+                dayLength: '23.9 hours',
+                yearLength: '365.25 days',
+                moons: '1 Moon',
+                atmosphere: 'Nitrogen (78%), Oxygen (21%), Argon',
+                temp: 'Average 15°C',
+                desc: 'Our home planet is the only place we know of so far that’s inhabited by living things. It\'s the only planet in our solar system with liquid water on the surface.',
+                image: 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'mars',
+                name: 'Mars',
+                type: 'Terrestrial Planet',
+                badge: 'The Red Planet',
+                diameter: '6,779 km',
+                distance: '227.9 million km',
+                dayLength: '24.6 hours',
+                yearLength: '687 Earth days',
+                moons: '2 Moons (Phobos, Deimos)',
+                atmosphere: 'Carbon Dioxide, Nitrogen, Argon',
+                temp: '-65°C average',
+                desc: 'A dusty, cold, desert world with a very thin atmosphere. There is strong evidence Mars was—billions of years ago— wetter and warmer, with a thicker atmosphere.',
+                image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'jupiter',
+                name: 'Jupiter',
+                type: 'Gas Giant',
+                badge: 'Outer Planet',
+                diameter: '139,820 km',
+                distance: '778.5 million km',
+                dayLength: '9.9 hours',
+                yearLength: '12 Earth years',
+                moons: '95 Confirmed Moons',
+                atmosphere: 'Hydrogen, Helium',
+                temp: '-110°C cloud top',
+                desc: 'By far the largest planet in our solar system, more than twice as massive as all the other planets combined. Jupiter\'s iconic Great Red Spot is a giant storm bigger than Earth.',
+                image: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'saturn',
+                name: 'Saturn',
+                type: 'Gas Giant',
+                badge: 'Ringed World',
+                diameter: '116,460 km',
+                distance: '1.4 billion km',
+                dayLength: '10.7 hours',
+                yearLength: '29 Earth years',
+                moons: '146 Confirmed Moons',
+                atmosphere: 'Hydrogen, Helium',
+                temp: '-140°C',
+                desc: 'Adorned with a dazzling, complex system of icy rings, Saturn is unique in our solar system. The other giant planets have rings, but none are as spectacular as Saturn\'s.',
+                image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'uranus',
+                name: 'Uranus',
+                type: 'Ice Giant',
+                badge: 'Outer Planet',
+                diameter: '50,724 km',
+                distance: '2.9 billion km',
+                dayLength: '17.2 hours',
+                yearLength: '84 Earth years',
+                moons: '28 Known Moons',
+                atmosphere: 'Hydrogen, Helium, Methane',
+                temp: '-195°C',
+                desc: 'Uranus rotates at a nearly 90-degree angle from the plane of its orbit. This unique tilt makes Uranus appear to spin on its side.',
+                image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'neptune',
+                name: 'Neptune',
+                type: 'Ice Giant',
+                badge: 'Outer Planet',
+                diameter: '49,244 km',
+                distance: '4.5 billion km',
+                dayLength: '16.1 hours',
+                yearLength: '165 Earth years',
+                moons: '16 Known Moons',
+                atmosphere: 'Hydrogen, Helium, Methane',
+                temp: '-200°C',
+                desc: 'Dark, cold, and whipped by supersonic winds, ice giant Neptune is the eighth and most distant major planet in our solar system.',
+                image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: 'pluto',
+                name: 'Pluto',
+                type: 'Dwarf Planet',
+                badge: 'Kuiper Belt Object',
+                diameter: '2,376 km',
+                distance: '5.9 billion km',
+                dayLength: '153 hours',
+                yearLength: '248 Earth years',
+                moons: '5 Moons (Charon, etc.)',
+                atmosphere: 'Nitrogen, Methane, Carbon Monoxide (seasonal)',
+                temp: '-230°C',
+                desc: 'A complex world of ice mountains and nitrogen glaciers located in the distant Kuiper Belt. Reclassified as a dwarf planet in 2006.',
+                image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80'
+            }
+        ];
+
+        // Populate Planet Tabs & Display
+        const planetTabsContainer = document.getElementById('planetTabs');
+        const planetDisplayCard = document.getElementById('planetDisplayCard');
+
+        function renderPlanet(planetId) {
+            const p = planetsData.find(item => item.id === planetId) || planetsData[0];
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.dataset.id === planetId) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            planetDisplayCard.innerHTML = `
+                <div class="solar-img-box">
+                    <img src="${p.image}" alt="${p.name}">
+                </div>
+                <div class="solar-info">
+                    <span class="solar-badge">${p.badge}</span>
+                    <h3>${p.name}</h3>
+                    <p>${p.desc}</p>
+                    <div class="solar-stats-grid">
+                        <div class="solar-stat-box">
+                            <span>Diameter</span>
+                            <strong>${p.diameter}</strong>
+                        </div>
+                        <div class="solar-stat-box">
+                            <span>Distance from Sun</span>
+                            <strong>${p.distance}</strong>
+                        </div>
+                        <div class="solar-stat-box">
+                            <span>Length of Year</span>
+                            <strong>${p.yearLength}</strong>
+                        </div>
+                        <div class="solar-stat-box">
+                            <span>Known Moons</span>
+                            <strong>${p.moons}</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        planetsData.forEach(p => {
+            const btn = document.createElement('button');
+            btn.className = `tab-btn ${p.id === 'mercury' ? 'active' : ''}`;
+            btn.dataset.id = p.id;
+            btn.textContent = p.name;
+            btn.addEventListener('click', () => renderPlanet(p.id));
+            planetTabsContainer.appendChild(btn);
+        });
+
+        renderPlanet('mercury');
+
+        // Comprehensive Discovered Black Holes Dataset with Accurate Quasar/Accretion Visualizations
+        const blackHolesData = [
+            {
+                name: 'Sagittarius A*',
+                type: 'Supermassive Black Hole',
+                distance: '26,000 light-years',
+                mass: '4.3 Million Solar Masses',
+                potential: 'Extremely high gravitational well at Milky Way core',
+                desc: 'The supermassive black hole at the center of our galaxy. Photographed directly by the Event Horizon Telescope in 2022.',
+                image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'M87* (Pōwehi)',
+                type: 'Supermassive Black Hole',
+                distance: '53 Million light-years',
+                mass: '6.5 Billion Solar Masses',
+                potential: 'Colossal galactic core powering a 5,000-ly relativistic jet',
+                desc: 'The first black hole ever directly photographed in human history. Located in the giant elliptical galaxy Messier 87.',
+                image: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Cygnus X-1',
+                type: 'Stellar-Mass Black Hole',
+                distance: '7,200 light-years',
+                mass: '21 Solar Masses',
+                potential: 'Intense X-ray binary accretion disk system',
+                desc: 'The first object widely accepted to contain a stellar black hole. Formed from the collapse of a massive star in the constellation Cygnus.',
+                image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'TON 618',
+                type: 'Ultramassive Quasar Black Hole',
+                distance: '10.4 Billion light-years',
+                mass: '66 Billion Solar Masses',
+                potential: 'One of the most massive black holes ever discovered',
+                desc: 'Powered by an ultra-luminous quasar and accretion disk. Because of its extreme distance, it is studied via spectroscopic analysis of its surrounding radiation rather than direct imaging.',
+                image: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Gaia BH1',
+                type: 'Stellar-Mass Black Hole',
+                distance: '1,560 light-years',
+                mass: '9.6 Solar Masses',
+                potential: 'Dormant stellar gravitational sink in binary orbit',
+                desc: 'Currently the closest known black hole to Earth, discovered by analyzing precise astrometric wobble data from the Gaia space telescope.',
+                image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Phoenix A*',
+                type: 'Supermassive Cluster Black Hole',
+                distance: '5.8 Billion light-years',
+                mass: 'Estimated 100 Billion Solar Masses',
+                potential: 'Dominant central singularity of the Phoenix Cluster',
+                desc: 'An extreme supermassive black hole candidate driving runaway gas cooling and star formation in the core of the Phoenix galaxy cluster.',
+                image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80'
+            }
+        ];
+
+        const blackHolesGrid = document.getElementById('blackHolesGrid');
+        blackHolesData.forEach(bh => {
+            const card = document.createElement('div');
+            card.className = 'bh-card';
+            card.innerHTML = `
+                <div class="bh-img">
+                    <img src="${bh.image}" alt="${bh.name}">
+                </div>
+                <div class="bh-content">
+                    <div>
+                        <span class="news-tag">${bh.type}</span>
+                        <h3>${bh.name}</h3>
+                        <p>${bh.desc}</p>
+                    </div>
+                    <div class="bh-metrics">
+                        <div><span>Mass:</span> <strong>${bh.mass}</strong></div>
+                        <div><span>Distance:</span> <strong>${bh.distance}</strong></div>
+                    </div>
+                </div>
+            `;
+            blackHolesGrid.appendChild(card);
+        });
+
+        // Space Agencies Dataset
+        const agenciesData = [
+            {
+                name: 'NASA',
+                country: 'United States',
+                icon: 'fa-rocket',
+                desc: 'National Aeronautics and Space Administration leading lunar Artemis missions, James Webb Space Telescope, and Mars rovers.',
+                flagship: 'Flagship: Artemis Program & JWST'
+            },
+            {
+                name: 'ESA',
+                country: 'Europe',
+                icon: 'fa-globe-europe',
+                desc: 'European Space Agency cooperating across 22 member states on planetary probes, earth observation, and solar orbiters.',
+                flagship: 'Flagship: Euclid & Juice Mission'
+            },
+            {
+                name: 'ISRO',
+                country: 'India',
+                icon: 'fa-satellite',
+                desc: 'Indian Space Research Organisation renowned for cost-efficient lunar landings (Chandrayaan) and solar observation (Aditya-L1).',
+                flagship: 'Flagship: Chandrayaan & Gaganyaan'
+            },
+            {
+                name: 'SpaceX',
+                country: 'Commercial (USA)',
+                icon: 'fa-shuttle-space',
+                desc: 'Private aerospace manufacturer pioneering reusable orbital rockets, Starship mega-rockets, and global satellite constellations.',
+                flagship: 'Flagship: Starship & Falcon 9'
+            },
+            {
+                name: 'CNSA',
+                country: 'China',
+                icon: 'fa-meteor',
+                desc: 'China National Space Administration operating lunar sample returns (Chang\'e), Mars rovers (Zhurong), and Tiangong space station.',
+                flagship: 'Flagship: Chang\'e Lunar Missions'
+            },
+            {
+                name: 'JAXA',
+                country: 'Japan',
+                icon: 'fa-satellite-dish',
+                desc: 'Japan Aerospace Exploration Agency specializing in asteroid sample return missions and advanced X-ray astronomy observatories.',
+                flagship: 'Flagship: Hayabusa2 & XRISM'
+            }
+        ];
+
+        const agenciesGrid = document.getElementById('agenciesGrid');
+        agenciesData.forEach(ag => {
+            const card = document.createElement('div');
+            card.className = 'agency-card';
+            card.innerHTML = `
+                <div class="agency-header">
+                    <div class="agency-icon"><i class="fa-solid ${ag.icon}"></i></div>
+                    <div>
+                        <h3>${ag.name}</h3>
+                        <span>${ag.country}</span>
+                    </div>
+                </div>
+                <p>${ag.desc}</p>
+                <div class="agency-flagship">${ag.flagship}</div>
+            `;
+            agenciesGrid.appendChild(card);
+        });
+
+        // Expanded Constellations Dataset
+        const constellationsData = [
+            {
+                name: 'Orion',
+                season: 'Winter (Northern Hemisphere)',
+                brightest: 'Rigel & Betelgeuse',
+                desc: 'The Hunter is one of the most recognizable constellations featuring the famous three-star belt and the Orion Nebula nursery.',
+                image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Ursa Major',
+                season: 'Circumpolar (Year-round North)',
+                brightest: 'Alioth & Dubhe',
+                desc: 'Contains the famous Big Dipper asterism which points navigators directly to Polaris, the North Star.',
+                image: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Cassiopeia',
+                season: 'Autumn / Winter',
+                brightest: 'Schedar & Caph',
+                desc: 'Easily identified by its distinctive W or M shape formed by five bright stars on the opposite side of Polaris from the Big Dipper.',
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Scorpius',
+                season: 'Summer (Southern / Low North)',
+                brightest: 'Antares',
+                desc: 'A magnificent winding hook of stars dominated by Antares, a red supergiant star often called the rival of Mars.',
+                image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Andromeda',
+                season: 'Autumn',
+                brightest: 'Alpheratz',
+                desc: 'Home to the magnificent Andromeda Galaxy (M31), our nearest major galactic neighbor located 2.5 million light-years away.',
+                image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                name: 'Taurus',
+                season: 'Winter',
+                brightest: 'Aldebaran',
+                desc: 'A prominent zodiac constellation containing the Pleiades (Seven Sisters) open cluster and the Crab Nebula supernova remnant.',
+                image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80'
+            }
+        ];
+
+        const constellationGrid = document.getElementById('constellationGrid');
+        constellationsData.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'constellation-card';
+            card.innerHTML = `
+                <div class="constellation-img">
+                    <img src="${c.image}" alt="${c.name}">
+                </div>
+                <div class="constellation-body">
+                    <div>
+                        <h3>${c.name}</h3>
+                        <p>${c.desc}</p>
+                    </div>
+                    <div class="constellation-meta">
+                        <span>Best: ${c.season}</span>
+                        <span>Alpha: ${c.brightest}</span>
+                    </div>
+                </div>
+            `;
+            constellationGrid.appendChild(card);
+        });
+
+        // Space News Dataset
+        const newsData = [
+            {
+                tag: 'James Webb Space Telescope',
+                title: 'JWST Detects Earliest Complex Organic Molecules in Deep Universe',
+                date: 'October 24, 2026',
+                source: 'NASA / ESA',
+                desc: 'Infrared spectroscopy reveals complex carbon-chain molecules in galaxies shining merely 350 million years after the Big Bang.',
+                image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                tag: 'Lunar Exploration',
+                title: 'Artemis Human Basecamp Site Selected Near Lunar South Pole',
+                date: 'October 19, 2026',
+                source: 'NASA',
+                desc: 'Flight controllers and lunar geologists finalize high-ground landing zones containing permanent water ice deposits.',
+                image: 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                tag: 'Exoplanet Discovery',
+                title: 'Habitable-Zone Super-Earth Confirmed in Gliese System',
+                date: 'October 12, 2026',
+                source: 'ESO Astronomy',
+                desc: 'Precise radial velocity measurements confirm a rocky world with stable atmospheric pressure orbiting within its star\'s goldilocks zone.',
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'
+            }
+        ];
+
+        const newsGrid = document.getElementById('newsGrid');
+        newsData.forEach(n => {
+            const card = document.createElement('div');
+            card.className = 'news-card';
+            card.innerHTML = `
+                <div class="news-img">
+                    <img src="${n.image}" alt="${n.title}">
+                </div>
+                <div class="news-content">
+                    <div>
+                        <span class="news-tag">${n.tag}</span>
+                        <h3>${n.title}</h3>
+                        <p>${n.desc}</p>
+                    </div>
+                    <div class="news-footer">
+                        <span>${n.date} &bull; ${n.source}</span>
+                        <a href="#news">Read <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            `;
+            newsGrid.appendChild(card);
+        });
+
+        // Interactive Knowledge Quiz
+        const quizQuestions = [
+            {
+                question: "What is the name of the supermassive black hole at the center of the Milky Way?",
+                options: ["M87*", "Sagittarius A*", "Cygnus X-1", "TON 618"],
+                answer: 1,
+                explanation: "Sagittarius A* sits at the galactic center, holding a mass of about 4.3 million Suns."
+            },
+            {
+                question: "Which planet in our solar system has the highest surface temperature due to a runaway greenhouse effect?",
+                options: ["Mercury", "Mars", "Venus", "Jupiter"],
+                answer: 2,
+                explanation: "Venus traps solar heat beneath a thick carbon dioxide and sulfuric acid cloud layer, reaching 465°C."
+            },
+            {
+                question: "Approximately how old is our universe according to modern cosmological measurements?",
+                options: ["4.5 Billion years", "13.8 Billion years", "50 Billion years", "500 Million years"],
+                answer: 1,
+                explanation: "Cosmic microwave background measurements by Planck and WMAP confirm the universe is roughly 13.8 billion years old."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let answered = false;
+
+        const quizContainer = document.getElementById('quizContainer');
+
+        function renderQuiz() {
+            const q = quizQuestions[currentQuizIndex];
+            answered = false;
+            quizContainer.innerHTML = `
+                <div style="font-size:0.85rem; color:var(--secondary); font-weight:600; text-transform:uppercase; margin-bottom:12px;">Question ${currentQuizIndex + 1} of ${quizQuestions.length}</div>
+                <div class="quiz-question">${q.question}</div>
+                <div class="quiz-options">
+                    ${q.options.map((opt, idx) => `
+                        <button class="quiz-option" onclick="handleQuizAnswer(${idx})">${opt}</button>
+                    `).join('')}
+                </div>
+                <div class="quiz-footer" id="quizFooter">
+                    <span style="color:var(--text-secondary); font-size:0.9rem;">Select an option above</span>
+                </div>
+            `;
+        }
+
+        window.handleQuizAnswer = function(selectedIdx) {
+            if (answered) return;
+            answered = true;
+            const q = quizQuestions[currentQuizIndex];
+            const optionBtns = document.querySelectorAll('.quiz-option');
+
+            optionBtns.forEach((btn, idx) => {
+                if (idx === q.answer) {
+                    btn.classList.add('correct');
+                } else if (idx === selectedIdx) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (selectedIdx === q.answer) {
+                quizScore++;
+            }
+
+            const quizFooter = document.getElementById('quizFooter');
+            quizFooter.innerHTML = `
+                <span style="color:var(--text-main); font-size:0.9rem;">${q.explanation}</span>
+                <button class="btn-primary" onclick="nextQuizQuestion()">${currentQuizIndex < quizQuestions.length - 1 ? 'Next Question' : 'View Results'}</button>
+            `;
+        }
+
+        window.nextQuizQuestion = function() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) {
+                renderQuiz();
+            } else {
+                quizContainer.innerHTML = `
+                    <div style="text-align:center; padding: 20px 0;">
+                        <h3 style="font-size:2rem; margin-bottom:12px;">Quiz Completed!</h3>
+                        <p style="color:var(--text-secondary); font-size:1.1rem; margin-bottom:24px;">You scored ${quizScore} out of ${quizQuestions.length} correctly.</p>
+                        <button class="btn-primary" onclick="restartQuiz()">Restart Quiz</button>
+                    </div>
+                `;
+            }
+        }
+
+        window.restartQuiz = function() {
+            currentQuizIndex = 0;
+            quizScore = 0;
+            renderQuiz();
+        }
+
+        renderQuiz();
+
+        // Search Filter Implementation
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if(!query) {
+                searchResults.innerHTML = `<p style="color: var(--text-secondary); font-size: 0.9rem;">Type to begin exploring database records...</p>`;
+                return;
+            }
+
+            const results = [];
+            planetsData.forEach(p => {
+                if(p.name.toLowerCase().includes(query) || p.type.toLowerCase().includes(query)) {
+                    results.push({title: p.name, type: 'Planet', desc: p.desc, link: '#solarsystem'});
+                }
+            });
+            blackHolesData.forEach(bh => {
+                if(bh.name.toLowerCase().includes(query) || bh.type.toLowerCase().includes(query)) {
+                    results.push({title: bh.name, type: 'Black Hole', desc: bh.desc, link: '#blackholes'});
+                }
+            });
+            constellationsData.forEach(c => {
+                if(c.name.toLowerCase().includes(query) || c.brightest.toLowerCase().includes(query)) {
+                    results.push({title: c.name, type: 'Constellation', desc: c.desc, link: '#constellations'});
+                }
+            });
+
+            if(results.length === 0) {
+                searchResults.innerHTML = `<p style="color: var(--text-secondary); font-size: 0.9rem;">No matching celestial objects found.</p>`;
+                return;
+            }
+
+            searchResults.innerHTML = results.map(r => `
+                <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); padding:14px; border-radius:10px; cursor:pointer;" onclick="location.href='${r.link}'; searchModal.classList.remove('active');">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <strong style="font-size:0.95rem; color:var(--text-main);">${r.title}</strong>
+                        <span style="font-size:0.75rem; color:var(--primary); font-weight:600; text-transform:uppercase;">${r.type}</span>
+                    </div>
+                    <p style="font-size:0.85rem; color:var(--text-secondary); margin:0; line-height:1.4;">${r.desc}</p>
+                </div>
+            `).join('');
+        });
+    </script>
+</body>
+</html>
